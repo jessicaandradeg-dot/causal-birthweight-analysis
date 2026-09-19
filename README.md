@@ -35,6 +35,7 @@ Usar dados de nascimentos de uma base pública para:
 - **Doubly Robust Estimation (AIPW);**
 - **Intervalos de Confiança (95%) calculados via Bootstrap não-paramétrico;**
 - **Análise de sensibilidade para confundimento não-observado.**
+- **Análise de Sensibilidade de Rosenbaum (`src/rosenbaum_bounds.py`):** Avaliação de robustez do efeito causal estimado frente a potenciais confundidores não-observados (omitted variable bias), calculando limites superiores e inferiores de p-valor para diferentes níveis de viés ($\Gamma \in [1.0, 2.0]$).
 
 ### Confundidores presumidos
 
