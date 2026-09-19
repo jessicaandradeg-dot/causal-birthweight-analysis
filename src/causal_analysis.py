@@ -315,6 +315,50 @@ def bootstrap_intervalo_confianca(y, t, X, n_iterations=500, alpha=0.05):
             t.iloc[idx].values if hasattr(t, 'iloc') else t[idx], 
             X.iloc[idx].values if hasattr(X, 'iloc') else X[idx]
         )
+        import numpy as np
+import pandas as pd
+from sklearn.linear_model import LogisticRegression, LinearRegression
+
+def estimador_duplamente_robusto(y, t, X):
+    """
+    Estimador Doubly Robust (AIPW) para estimar o ATE do pré-natal no peso ao nascer.
+    """
+    # 1. Modelo de Propensão (PSM/IPW)
+    ps_model = LogisticRegression(max_iter=1000).fit(X, t)
+    ps = np.clip(ps_model.predict_proba(X)[:, 1], 0.01, 0.99)
+    
+    # 2. Modelos de Regressão do Desfecho
+    m1 = LinearRegression().fit(X[t == 1], y[t == 1])
+    m0 = LinearRegression().fit(X[t == 0], y[t == 0])
+    
+    mu1 = m1.predict(X)
+    mu0 = m0.predict(X)
+    
+    # 3. Equação Doubly Robust (AIPW)
+    ate_dr = np.mean(
+        (t * y / ps - (t - ps) / ps * mu1) - 
+        ((1 - t) * y / (1 - ps) + (t - ps) / (1 - ps) * mu0)
+    )
+    return ate_dr
+
+def bootstrap_intervalo_confianca(y, t, X, n_iterations=500, alpha=0.05):
+    """Calcula o Intervalo de Confiança de 95% para o ATE via Bootstrap."""
+    ates = []
+    n = len(y)
+    np.random.seed(42)
+    
+    for _ in range(n_iterations):
+        idx = np.random.choice(n, size=n, replace=True)
+        ate = estimador_duplamente_robusto(
+            y.iloc[idx].values if hasattr(y, 'iloc') else y[idx], 
+            t.iloc[idx].values if hasattr(t, 'iloc') else t[idx], 
+            X.iloc[idx].values if hasattr(X, 'iloc') else X[idx]
+        )
+        ates.append(ate)
+        
+    ic_lower = np.percentile(ates, 100 * (alpha / 2))
+    ic_upper = np.percentile(ates, 100 * (1 - alpha / 2))
+    return ic_lower, ic_upper
         ates.append(ate)
         
     ic_lower = np.percentile(ates, 100 * (alpha / 2))
