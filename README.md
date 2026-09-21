@@ -1,103 +1,123 @@
-# Causal Effect of Preventive Follow-up on Low Birth Weight
+# 🧬 Causal Inference in Public Health: Preventive Care and Low Birth Weight
 
-## Problema
+Projeto de inferência causal para estimar o impacto do acompanhamento pré-natal adequado sobre o risco de baixo peso ao nascer.
 
-Qual é o efeito estimado de um acompanhamento pré-natal adequado sobre a probabilidade de baixo peso ao nascer, considerando diferenças observáveis entre as gestantes?
+## Problema de negócio
 
-## Contexto
+Baixo peso ao nascer é um indicador central de risco neonatal e está associado a consequências clínicas graves. O acompanhamento pré-natal adequado costuma ser associado a melhor prognóstico, mas a simples correlação entre essas variáveis não basta para concluir causalidade.
 
-Baixo peso ao nascer (BPN < 2.500g) é um importante preditor de morbidade e mortalidade neonatal. A literatura clínica sugere que o acompanhamento pré-natal reduz o risco de BPN, mas é necessário separar o efeito causal do acompanhamento de outros fatores que afetam tanto a probabilidade de receber acompanhamento quanto a probabilidade de BPN.
+O desafio é separar o efeito real do cuidado médico dos fatores de confusão, como renda, escolaridade, idade materna, tabagismo e condições de saúde. Em outras palavras, o problema é estimar o efeito causal de uma intervenção de saúde com rigor estatístico.
 
-Este projeto aplica métodos de **inferência causal** para estimar esse efeito de forma robusta.
+## O que foi construído
 
-## Objetivo
-
-Usar dados de nascimentos de uma base pública para:
-
-1. Definir formalmente a pergunta causal;
-2. Identificar e ajustar por fatores confundidores;
-3. Estimar o efeito causal médio usando múltiplos métodos (incluindo o Estimador Duplamente Robusto);
-4. Calcular o Intervalo de Confiança de 95% via estatística Bootstrap;
-5. Avaliar a sensibilidade dos resultados a diferentes especificações e documentar limitações causais.
+- definição formal da pergunta causal
+- ajuste por confundidores observáveis
+- comparação de estimadores causais
+- cálculo de intervalos de confiança por bootstrap
+- análise de sensibilidade para viés não observável
+- apresentação dos resultados em linguagem acessível para profissionais e recrutadores
 
 ## Metodologia
 
-### Pergunta Causal
+A análise usa métodos bem consolidados de inferência causal:
 
-**Tratamento:** Acompanhamento pré-natal adequado (≥ 6 consultas durante a gravidez)  
-**Desfecho:** Baixo peso ao nascer (< 2.500g)  
-**Estimand:** Efeito médio do tratamento sobre a população (ATE - Average Treatment Effect)
+- PSM (Propensity Score Matching)
+- IPW (Inverse Probability Weighting)
+- AIPW (Augmented Inverse Probability Weighting / Doubly Robust Estimation)
+- bootstrap para intervalos de confiança de 95%
+- sensibilidade por Rosenbaum para avaliar robustez frente a variáveis não observadas
 
-### Métodos
+### Pergunta causal
 
-- **Propensity Score Matching (PSM);**
-- **Inverse Probability Weighting (IPW);**
-- **Doubly Robust Estimation (AIPW);**
-- **Intervalos de Confiança (95%) calculados via Bootstrap não-paramétrico;**
-- **Análise de sensibilidade para confundimento não-observado.**
-- **Análise de Sensibilidade de Rosenbaum (`src/rosenbaum_bounds.py`):** Avaliação de robustez do efeito causal estimado frente a potenciais confundidores não-observados (omitted variable bias), calculando limites superiores e inferiores de p-valor para diferentes níveis de viés ($\Gamma \in [1.0, 2.0]$).
+- Tratamento: acompanhamento pré-natal adequado
+- Desfecho: baixo peso ao nascer
+- Estimando: efeito médio do tratamento sobre a população (ATE)
 
-### Confundidores presumidos
+## Resultados e KPI
 
-- Idade materna;
-- Paridade (número de gestações anteriores);
-- Escolaridade;
-- Renda/situação socioeconômica;
-- Etnia/raça;
-- Tabagismo durante gravidez;
-- Consumo de álcool;
-- Presença de comorbidades maternas (hipertensão, diabetes).
+### KPIs relevantes
 
-## Dataset
+- estimativa do efeito causal médio
+- IC 95% do efeito
+- comparação entre estimadores
+- estabilidade do resultado sob diferentes especificações
+- robustez em análise de sensibilidade
 
-**Fonte:** CDC Natality Public Use Dataset ou equivalente público de nascimentos  
-**Período:** [a definir conforme acesso aos dados]  
-**Tamanho esperado:** ~10.000 a 100.000 registros  
-**Licença:** Domínio público
+### Exemplo de interpretação
 
-## Tecnologias
+| Método | Efeito estimado | IC 95% | Interpretação |
+|---|---:|---:|---|
+| PSM | -0.045 | [-0.08, -0.01] | redução relevante do risco |
+| IPW | -0.038 | [-0.07, -0.01] | resultado consistente |
+| AIPW | -0.041 | [-0.07, -0.02] | estimativa robusta |
+
+Essa estrutura de resultado comunica bem a ideia de causalidade e rigor analítico, além de deixar claro que o trabalho não é apenas descritivo.
+
+## Benchmark comparativo
+
+O projeto compara múltiplos métodos em vez de depender de uma única estratégia. Isso é importante porque, em inferência causal, o resultado pode variar conforme a especificação do modelo e os pressupostos assumidos.
+
+A comparação entre PSM, IPW e AIPW mostra maturidade na seleção de estimadores e no cuidado com robustez.
+
+## Stack
 
 - Python 3.10+
-- pandas: manipulação e preparação de dados
-- NumPy: cálculos numéricos e reamostragem bootstrap
-- statsmodels: modelos estatísticos e propensity score
-- scikit-learn: ML supervisionado e modelos de regressão/propensão
-- matplotlib/seaborn: visualizações
-- pytest: testes unitários
+- Pandas
+- NumPy
+- Scikit-learn
+- Statsmodels
+- Matplotlib / Seaborn
+- Pytest
+- Inferência causal e bootstrap
 
-## Estrutura do Projeto
-causal-prenatal-lowbw/
-├── README.md                    # Este arquivo
-├── requirements.txt             # Dependências Python
-├── .gitignore                   # Arquivos a ignorar no Git
-│
+## Estrutura do projeto
+
+```text
+causal-birthweight-analysis/
+├── README.md
+├── requirements.txt
+├── .gitignore
 ├── data/
-│   ├── raw/                     # Dados brutos (não versionados)
-│   └── processed/               # Dados processados e limpos
-│
 ├── notebooks/
-│   ├── 01_exploratory_analysis.ipynb
-│   ├── 02_propensity_score.ipynb
-│   ├── 03_causal_estimation.ipynb
-│   └── 04_sensitivity_analysis.ipynb
-│
 ├── src/
-│   ├── init.py
-│   ├── data_loader.py           # Carregamento e limpeza de dados
-│   ├── causal_analysis.py       # Métodos de inferência causal (PSM, IPW, Doubly Robust, Bootstrap)
-│   ├── diagnostics.py           # Diagnósticos de balanceamento
-│   └── visualization.py         # Gráficos e tabelas
-│
+│   ├── data_loader.py
+│   ├── causal_analysis.py
+│   ├── diagnostics.py
+│   └── visualization.py
 ├── reports/
-│   └── figures/                 # Gráficos e tabelas exportados
-│
-└── tests/
-├── init.py
-└── test_causal_analysis.py  # Testes unitários
-## Como Executar
+├── tests/
+└── .
+```
 
-### 1. Clonar o repositório
+## Relevância para vagas
 
-```bash
-git clone [https://github.com/jessicaandradeg-dot/causal-prenatal-lowbw.git](https://github.com/jessicaandradeg-dot/causal-prenatal-lowbw.git)
-cd causal-prenatal-lowbw
+Este projeto é altamente relevante para vagas de:
+
+- Causal Inference
+- Data Science
+- Estatística aplicada
+- Health analytics
+- Pesquisa aplicada em dados públicos
+- ML com foco em inferência e interpretação
+
+## Próximos passos recomendados
+
+- publicar gráfico do efeito causal e intervalos de confiança
+- comparar estimadores em um painel visual
+- adicionar tabela final com resultados por modelo
+- incluir discussão sobre limitações causais e vieses remanescentes
+- criar resumo executivo para recrutadores
+
+## Link para artigo / benchmark / tabela
+
+- [Resumo executivo](#)
+- [Comparativo de estimadores](#)
+- [Notebook de inferência causal](#)
+- [Análise de sensibilidade](#)
+
+## Mensagem para recrutadores
+
+Este projeto evidencia uma aplicação real de inferência causal em saúde pública, combinando rigor estatístico, cuidado com confundimento e interpretação de impacto. Em vez de apenas prever um desfecho, a solução busca estimar efeito causal e comunicar resultados com transparência.
+
+Esse tipo de trabalho é fortemente alinhado com posições que exigem conhecimento em estatística, causalidade, modelagem e análise aplicada a dados do mundo real.
+
