@@ -100,13 +100,6 @@ Este projeto é altamente relevante para vagas de:
 - Pesquisa aplicada em dados públicos
 - ML com foco em inferência e interpretação
 
-## Próximos passos recomendados
-
-- publicar gráfico do efeito causal e intervalos de confiança
-- comparar estimadores em um painel visual
-- adicionar tabela final com resultados por modelo
-- incluir discussão sobre limitações causais e vieses remanescentes
-- criar resumo executivo para recrutadores
 
 ## Link para artigo / benchmark / tabela
 
@@ -114,10 +107,4 @@ Este projeto é altamente relevante para vagas de:
 - [Comparativo de estimadores](#)
 - [Notebook de inferência causal](#)
 - [Análise de sensibilidade](#)
-
-## Mensagem para recrutadores
-
-Este projeto evidencia uma aplicação real de inferência causal em saúde pública, combinando rigor estatístico, cuidado com confundimento e interpretação de impacto. Em vez de apenas prever um desfecho, a solução busca estimar efeito causal e comunicar resultados com transparência.
-
-Esse tipo de trabalho é fortemente alinhado com posições que exigem conhecimento em estatística, causalidade, modelagem e análise aplicada a dados do mundo real.
 
