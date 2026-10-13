@@ -89,17 +89,6 @@ causal-birthweight-analysis/
 └── .
 ```
 
-## Relevância para vagas
-
-Este projeto é altamente relevante para vagas de:
-
-- Causal Inference
-- Data Science
-- Estatística aplicada
-- Health analytics
-- Pesquisa aplicada em dados públicos
-- ML com foco em inferência e interpretação
-
 
 ## Link para artigo / benchmark / tabela
 
